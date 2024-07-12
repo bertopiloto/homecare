@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Homecare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-image: url('saude2.jpg'); /* Imagem de fundo para o corpo */
+            background-size: cover; /* Cobrir todo o espaço disponível */
+            background-position: center; /* Centralizar a imagem */
+            background-repeat: no-repeat; /* Não repetir a imagem */
+            height: 100vh; /* Definir altura total da página */
+            margin: 0; /* Remover margens */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .calendar, .modal-content {
+            background-color: rgba(255, 255, 255, 0.7); /* Fundo branco com 70% de opacidade */
+            backdrop-filter: blur(10px); /* Efeito de desfoque no fundo */
+            border-radius: 10px; /* Borda arredondada */
+            margin-top: 20px; /* Espaço superior */
+            padding: 20px; /* Espaçamento interno */
+            transition: all 0.3s ease; /* Transição suave */
+        }
+        .calendar table {
+            margin-bottom: 0; /* Remover espaço inferior da tabela */
+        }
+        .calendar .btn {
+            transition: transform 0.3s ease; /* Transição suave para botões */
+        }
+        .calendar .btn:hover {
+            transform: scale(1.1); /* Aumentar tamanho ao passar o mouse */
+        }
+        .calendar h5 {
+            font-size: 1.2rem; /* Tamanho da fonte do título do calendário */
+            margin-bottom: 10px; /* Espaço inferior */
+        }
+        .filters .btn {
+            transition: background-color 0.3s ease; /* Transição suave para botões */
+        }
+        .filters .btn:hover {
+            background-color: rgba(255, 255, 255, 0.9); /* Fundo branco mais claro ao passar o mouse */
+        }
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        .search-form input {
+            flex: 1;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+        }
+        .search-form button {
+            margin-left: 10px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        .search-form button i {
+            margin-right: 5px;
+        }
+        .highlighted-date {
+            background-color: #f0ad4e !important; /* Cor de destaque para a data */
+            color: #fff !important; /* Texto branco */
+            font-weight: bold; /* Texto em negrito */
+            border-radius: 50%; /* Borda circular */
+            padding: 8px; /* Espaçamento interno */
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 bg-primary text-white p-4">
+                <div class="calendar mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <button class="btn btn-light btn-sm prev">&lt;</button>
+                        <h5 id="month-year" class="mb-0">Junho 2021</h5>
+                        <button class="btn btn-light btn-sm next">&gt;</button>
+                    </div>
+                    <table class="table table-bordered text-center text-white">
+                        <thead>
+                            <tr>
+                                <th>D</th>
+                                <th>S</th>
+                                <th>T</th>
+                                <th>Q</th>
+                                <th>Q</th>
+                                <th>S</th>
+                                <th>S</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendar-body">
+                            <!-- Calendar dates will be injected here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="filters">
+                    <button class="btn btn-outline-light w-100 mb-2">Agendado</button>
+                    <button class="btn btn-outline-light w-100 mb-2">Confirmado</button>
+                    <button class="btn btn-outline-light w-100 mb-2">Aguardando</button>
+                    <button class="btn btn-outline-light w-100 mb-2">Atendido</button>
+                    <button class="btn btn-outline-light w-100">Cancelado</button>
+                </div>
+            </div>
+            <div class="col-md-9 p-4">
+                <div class="search-form mb-4">
+                    <input type="text" class="form-control me-2" id="search" placeholder="Pesquisar por nome, CPF ou telefone">
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i> Pesquisar
+                    </button>
+                    <button class="btn btn-outline-danger ms-2">Sair</button>
+                </div>
+                <div class="list-group mb-4" id="appointments">
+                    <!-- Appointments will be listed here -->
+                </div>
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPatientModal">Adicionar Paciente</button>
+                <div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addPatientModalLabel">Adicionar Paciente</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addPatientForm">
+                                    <div class="mb-3">
+                                        <label for="patientName" class="form-label">Nome do Paciente</label>
+                                        <input type="text" class="form-control" id="patientName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="patientPhone" class="form-label">Telefone</label>
+                                        <input type="text" class="form-control" id="patientPhone" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="patientCity" class="form-label">Cidade</label>
+                                        <select class="form-select" id="patientCity" required>
+                                            <!-- Add cities of Distrito Federal here -->
+                                            <option value="Brasília">Brasília</option>
+                                            <option value="Ceilândia">Ceilândia</option>
+                                            <option value="Gama">Gama</option>
+                                            <option value="Guará">Guará</option>
+                                            <option value="Planaltina">Planaltina</option>
+                                            <option value="Taguatinga">Taguatinga</option>
+                                            <option value="Águas Claras">Águas Claras</option>
+                                            <option value="Brazlândia">Brazlândia</option>
+                                            <option value="Candangolândia">Candangolândia</option>
+                                            <option value="Núcleo Bandeirante">Núcleo Bandeirante</option>
+                                            <option value="Paranoá">Paranoá</option>
+                                            <option value="Samambaia">Samambaia</option>
+                                            <option value="Santa Maria">Santa Maria</option>
+                                            <option value="São Sebastião">São Sebastião</option>
+                                            <option value="Sobradinho">Sobradinho</option>
+                                            <option value="Taguatinga Norte">Taguatinga Norte</option>
+                                            <option value="Taguatinga Sul">Taguatinga Sul</option>
+                                            <option value="Vicente Pires">Vicente Pires</option>
+                                            <option value="SCIA">SCIA</option>
+                                            <option value="SIA">SIA</option>
+                                            <option value="Jardim Botânico">Jardim Botânico</option>
+                                            <option value="Itapoã">Itapoã</option>
+                                            <option value="Sudoeste/Octogonal">Sudoeste/Octogonal</option>
+                                            <option value="Varjão">Varjão</option>
+                                            <option value="Park Way">Park Way</option>
+                                            <option value="Cruzeiro">Cruzeiro</option>
+                                            <option value="Fercal">Fercal</option>
+                                            <option value="Lago Norte">Lago Norte</option>
+                                            <option value="Lago Sul">Lago Sul</option>
+                                            <option value="Riacho Fundo">Riacho Fundo</option>
+                                            <option value="Riacho Fundo II">Riacho Fundo II</option>
+                                            <option value="SCIA">SCIA</option>
+                                            <option value="SIA">SIA</option>
+                                            <option value="Candangolândia">Candangolândia</option>
+                                            <option value="Vicente Pires">Vicente Pires</option>
+                                            <option value="Park Way">Park Way</option>
+                                            <option value="Jardins Mangueiral">Jardins Mangueiral</option>
+                                            <option value="Itapoã">Itapoã</option>
+                                            <option value="Santa Maria">Santa Maria</option>
+                                            <option value="Jardins Mangueiral">Jardins Mangueiral</option>
+                                            <option value="Vila Planalto">Vila Planalto</option>
+                                            <option value="Brazlândia">Brazlândia</option>
+                                            <option value="Cruzeiro">Cruzeiro</option>
+                                            <option value="Gama">Gama</option>
+                                            <option value="Lago Norte">Lago Norte</option>
+                                            <option value="Lago Sul">Lago Sul</option>
+                                            <option value="Núcleo Bandeirante">Núcleo Bandeirante</option>
+                                            <option value="Paranoá">Paranoá</option>
+                                            <option value="Planaltina">Planaltina</option>
+                                            <option value="Riacho Fundo I">Riacho Fundo I</option>
+                                            <option value="Riacho Fundo II">Riacho Fundo II</option>
+                                            <option value="Samambaia">Samambaia</option>
+                                            <option value="São Sebastião">São Sebastião</option>
+                                            <option value="SCIA">SCIA</option>
+                                            <option value="SIA">SIA</option>
+                                            <option value="Sobradinho">Sobradinho</option>
+                                            <option value="Sobradinho II">Sobradinho II</option>
+                                            <option value="Sudoeste/Octogonal">Sudoeste/Octogonal</option>
+                                            <option value="Taguatinga">Taguatinga</option>
+                                            <option value="Varjão">Varjão</option>
+                                            <!-- Add more cities as needed -->
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="appointmentDate" class="form-label">Data do Plantão</label>
+                                        <input type="date" class="form-control" id="appointmentDate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="appointmentTime" class="form-label">Hora do Plantão</label>
+                                        <input type="time" class="form-control" id="appointmentTime" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="appointmentType" class="form-label">Tipo de Plantão</label>
+                                        <select class="form-select" id="appointmentType" required>
+                                            <option value="" disabled selected>Selecione o Tipo</option>
+                                            <option value="Consulta">Consulta</option>
+                                            <option value="Exame">Exame</option>
+                                            <!-- Add more types as needed -->
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

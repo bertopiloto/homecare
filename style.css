@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #222; /* Cor de fundo escura */
+    color: #fff; /* Cor do texto */
+}
+
+.container-fluid {
+    padding: 20px;
+}
+
+.calendar table {
+    background-color: #333; /* Cor de fundo para a tabela do calendário */
+    color: #fff; /* Cor do texto da tabela */
+}
+
+.calendar table th,
+.calendar table td {
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #444; /* Cor da borda da tabela */
+}
+
+.calendar table .today {
+    background-color: #007bff; /* Cor de destaque para o dia atual */
+}
+
+.list-group-item {
+    background-color: #333; /* Cor de fundo para os itens da lista */
+    border: 1px solid #444; /* Cor da borda dos itens da lista */
+    margin-bottom: 10px;
+}
+
+#appointments .list-group-item {
+    border-left: 5px solid #007bff; /* Cor da borda esquerda para os itens da lista */
+}
+
+.modal-content {
+    background-color: #333; /* Cor de fundo para o modal */
+    color: #fff; /* Cor do texto dentro do modal */
+    border: 1px solid #444; /* Cor da borda do modal */
+}
+
+.btn-primary,
+.btn-outline-primary,
+.btn-danger,
+.btn-outline-danger,
+.btn-light,
+.btn-outline-light {
+    color: #fff; /* Cor do texto nos botões */
+}
+
+.btn-primary,
+.btn-danger {
+    background-color: #007bff; /* Cor de fundo para botões principais */
+    border-color: #007bff; /* Cor da borda para botões principais */
+}
+
+.btn-outline-primary,
+.btn-outline-danger {
+    background-color: transparent; /* Fundo transparente para botões de contorno */
+    border-color: #007bff; /* Cor da borda para botões de contorno */
+}
+
+.btn-outline-primary:hover,
+.btn-outline-danger:hover {
+    background-color: #007bff; /* Cor de fundo no hover para botões de contorno */
+    color: #fff; /* Cor do texto no hover para botões de contorno */
+}
+
+.form-control,
+.form-select {
+    background-color: #444; /* Cor de fundo para inputs e selects */
+    color: #fff; /* Cor do texto nos inputs e selects */
+    border-color: #555; /* Cor da borda para inputs e selects */
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #555; /* Cor de fundo no foco para inputs e selects */
+    border-color: #007bff; /* Cor da borda no foco para inputs e selects */
+}
+
+.input-group-text {
+    background-color: #555; /* Cor de fundo para o grupo de input */
+    border-color: #555; /* Cor da borda para o grupo de input */
+    color: #fff; /* Cor do texto no grupo de input */
+}
+
+.input-group-text:hover {
+    background-color: #007bff; /* Cor de fundo no hover para o grupo de input */
+    color: #fff; /* Cor do texto no hover para o grupo de input */
+}
+
+#addPatientModal .modal-content {
+    background-color: #333; /* Cor de fundo para o modal de adicionar paciente */
+    color: #fff; /* Cor do texto dentro do modal de adicionar paciente */
+    border: 1px solid #444; /* Cor da borda para o modal de adicionar paciente */
+}
+/* Estilo para a data destacada */
+.highlighted-date {
+    background-color: #f0ad4e; /* Cor de fundo */
+    color: #fff; /* Cor do texto */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Transição suave */
+    animation: blink 1.5s infinite; /* Animação de piscar */
+    border-radius: 8px; /* Borda arredondada */
+    box-shadow: 0 0 10px rgba(240, 173, 78, 0.8); /* Sombra suave */
+}
+
+/* Animação de piscar */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
